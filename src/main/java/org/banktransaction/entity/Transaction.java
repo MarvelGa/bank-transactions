@@ -1,11 +1,20 @@
 package org.banktransaction.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Transaction {
     public enum TransactionType {
         CARD("card"), DIRECT_DEBIT("direct debit"), INTERNET("internet");
@@ -17,6 +26,8 @@ public class Transaction {
         public final String type;
     }
 
+    @Id
+    private String id;
     private LocalDate date;
     private String vendor;
     private TransactionType type;
