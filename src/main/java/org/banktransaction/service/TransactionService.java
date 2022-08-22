@@ -2,6 +2,7 @@ package org.banktransaction.service;
 
 import lombok.RequiredArgsConstructor;
 import org.banktransaction.entity.Transaction;
+import org.banktransaction.exception.FileCanNotBeParsedException;
 import org.banktransaction.repository.TransactionRepository;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -39,7 +40,7 @@ static String fileDir = "src/main/resources/data.json";
                 mapJsonToTransaction(transactions, parsedArray);
             }
         } catch (ParseException e) {
-           /* throw new RuntimeException("There is a problem with parsing");*/
+            throw new FileCanNotBeParsedException("There is a problem with parsing");
         }
         return transactions;
 }
