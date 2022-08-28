@@ -13,10 +13,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -38,7 +39,6 @@ class TransactionServiceTest {
     void setUp() {
         service = new TransactionService(repository);
         transaction1 = Transaction.builder()
-             /*   .id(1L)*/
                 .amount(new BigDecimal("845.03"))
                 .vendor("Vendor1")
                 .category("Groceries")
@@ -47,7 +47,6 @@ class TransactionServiceTest {
                 .build();
 
         transaction2 = Transaction.builder()
-            /*    .id(2L)*/
                 .amount(new BigDecimal("75.03"))
                 .vendor("Vendor2")
                 .category("MyMonthlyDD")
@@ -56,7 +55,6 @@ class TransactionServiceTest {
                 .build();
 
         transaction3 = Transaction.builder()
-     /*           .id(3L)*/
                 .amount(new BigDecimal("775.03"))
                 .vendor("Vendor3")
                 .category("MyMonthlyDD")
@@ -65,7 +63,6 @@ class TransactionServiceTest {
                 .build();
 
         transaction4 = Transaction.builder()
-        /*        .id(4L)*/
                 .amount(new BigDecimal("1475.03"))
                 .vendor("Vendor4")
                 .category("MyMonthlyDD")
@@ -74,7 +71,6 @@ class TransactionServiceTest {
                 .build();
 
         transaction5 = Transaction.builder()
-       /*         .id(5L)*/
                 .amount(new BigDecimal("877.03"))
                 .vendor("Vendor5")
                 .category("")
@@ -86,9 +82,9 @@ class TransactionServiceTest {
     }
 
     @Test
-    void shouldParseFileCorrect(){
+    void shouldParseFileCorrect() {
         String fileDir = "src/test/resources/test-data.json";
-        List<Transaction> expected =  transactions;
+        List<Transaction> expected = transactions;
         var actual = service.readFileAndSaveInRepository(fileDir);
         assertEquals(expected, actual);
     }
@@ -111,11 +107,62 @@ class TransactionServiceTest {
         assertEquals(FileCanNotBeParsedException.class, exception.getClass());
     }
 
+    @Test
+    void shouldSortAsLatestFirst() {
+        List<Transaction> expected = List.of(transaction1, transaction3, transaction2, transaction4, transaction5);
+        List<Transaction> actual = service.sortAsLatestFirst(transactions);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldGetTotalOutgoingPerCategory() {
+        Map<String, BigDecimal> expected = new HashMap<>();
+        expected.put("", new BigDecimal("877.03"));
+        expected.put("Groceries", new BigDecimal("845.03"));
+        expected.put("MyMonthlyDD", new BigDecimal("2325.09"));
+        Map<String, BigDecimal> actual = service.getCategoryToOutgoing(transactions);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldGetTransactionsByGroceriesCategory() {
+        String category = "Groceries";
+        List<Transaction> expected = List.of(transaction1);
+        List<Transaction> actual = service.getTransactionsByCategory(transactions, category);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldGetMonthlyAverageSpendInCategory() {
+        Map<String, BigDecimal> expected = new HashMap<>();
+        expected.put("Groceries", new BigDecimal("845.03"));
+        String category = "Groceries";
+        Map<String, BigDecimal> actual = service.getMonthlyAverageSpendToCategory(transactions, category);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldGetTransactionsByMyMonthlyDDCategory() {
+        String category = "MyMonthlyDD";
+        List<Transaction> expected = List.of(transaction2, transaction3, transaction4);
+        List<Transaction> actual = service.getTransactionsByCategory(transactions, category);
+        assertEquals(expected.size(), actual.size());
+        assertEquals(service.sortAsLatestFirst(expected), service.sortAsLatestFirst(actual));
+    }
+
+    @Test
+    void shouldGetTransactionsByEmptyCategory() {
+        String category = "";
+        List<Transaction> expected = List.of(transaction5);
+        List<Transaction> actual = service.getTransactionsByCategory(transactions, category);
+        assertEquals(expected.size(), actual.size());
+        assertEquals(service.sortAsLatestFirst(expected), service.sortAsLatestFirst(actual));
+    }
 
     @Test
     void shouldGetHighestSpendTransactionByCategoryAndYear() {
         int year = 2020;
-        String category="MyMonthlyDD";
+        String category = "MyMonthlyDD";
         Transaction expected = transaction4;
         Transaction actual = service.getHighestSpendByCategoryAndYear(year, category, transactions);
         assertEquals(expected, actual);
@@ -124,7 +171,7 @@ class TransactionServiceTest {
     @Test
     void ifHighestSpendTransactionByCategoryAndYearWasNotFoundByNotExistYearThenReturnEmptyObject() {
         int year = 2000;
-        String category="MyMonthlyDD";
+        String category = "MyMonthlyDD";
         Transaction expected = new Transaction();
         Transaction actual = service.getHighestSpendByCategoryAndYear(year, category, transactions);
         assertEquals(expected, actual);
@@ -133,7 +180,7 @@ class TransactionServiceTest {
     @Test
     void ifHighestSpendTransactionByCategoryAndYearWasNotFoundByNotExistCategoryThenReturnEmptyObject() {
         int year = 2020;
-        String category="Not exist";
+        String category = "Not exist";
         Transaction expected = new Transaction();
         Transaction actual = service.getHighestSpendByCategoryAndYear(year, category, transactions);
         assertEquals(expected, actual);
@@ -142,7 +189,7 @@ class TransactionServiceTest {
     @Test
     void shouldGetHighestSpendTransactionByEmptyCategoryAndYear() {
         int year = 2020;
-        String category="";
+        String category = "";
         Transaction expected = transaction5;
         Transaction actual = service.getHighestSpendByCategoryAndYear(year, category, transactions);
         assertEquals(expected, actual);
@@ -151,7 +198,7 @@ class TransactionServiceTest {
     @Test
     void ifLowestSpendTransactionByCategoryAndYearWasNotFoundThenReturnEmptyObject() {
         int year = 2020;
-        String category="MyMonthlyDD";
+        String category = "MyMonthlyDD";
         Transaction expected = transaction2;
         Transaction actual = service.getLowestSpendByCategoryAndYear(year, category, transactions);
         assertEquals(expected, actual);
@@ -160,7 +207,7 @@ class TransactionServiceTest {
     @Test
     void ifLowestSpendTransactionByCategoryAndYearWasNotFoundByNotExistYearThenReturnEmptyObject() {
         int year = 1900;
-        String category="MyMonthlyDD";
+        String category = "MyMonthlyDD";
         Transaction expected = new Transaction();
         Transaction actual = service.getLowestSpendByCategoryAndYear(year, category, transactions);
         assertEquals(expected, actual);
@@ -169,7 +216,7 @@ class TransactionServiceTest {
     @Test
     void ifLowestSpendTransactionByCategoryAndYearWasNotFoundByNotExistCategoryThenReturnEmptyObject() {
         int year = 2020;
-        String category="Not exist";
+        String category = "Not exist";
         Transaction expected = new Transaction();
         Transaction actual = service.getLowestSpendByCategoryAndYear(year, category, transactions);
         assertEquals(expected, actual);
@@ -178,14 +225,10 @@ class TransactionServiceTest {
     @Test
     void shouldGetLowestSpendTransactionByEmptyCategoryAndYear() {
         int year = 2020;
-        String category="";
+        String category = "";
         Transaction expected = transaction5;
         Transaction actual = service.getLowestSpendByCategoryAndYear(year, category, transactions);
         assertEquals(expected, actual);
     }
-
-
-
-
 
 }

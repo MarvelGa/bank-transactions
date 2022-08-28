@@ -42,6 +42,7 @@ public class TransactionService {
         return transactions;
     }
 
+
     public List<Transaction> parseFile(String fileDir) throws IOException {
         JSONParser jsonParser = new JSONParser();
         List<Transaction> transactions = null;
@@ -57,7 +58,7 @@ public class TransactionService {
         return transactions;
     }
 
-    private static void mapJsonToTransaction(List<Transaction> transactions, JSONArray parsedArray) {
+    private void mapJsonToTransaction(List<Transaction> transactions, JSONArray parsedArray) {
         for (Object elem : parsedArray) {
             JSONObject jsonElem = (JSONObject) elem;
             Transaction transaction = Transaction.builder()
@@ -71,13 +72,13 @@ public class TransactionService {
         }
     }
 
-    public static List<Transaction> sortAsLatestFirst(List<Transaction> transactions) {
+    public List<Transaction> sortAsLatestFirst(List<Transaction> transactions) {
         return transactions.stream()
                 .sorted(Comparator.comparing(Transaction::getDate).reversed())
                 .collect(Collectors.toList());
     }
 
-    public static Map<String, BigDecimal> getCategoryToOutgoing(List<Transaction> transactions) {
+    public Map<String, BigDecimal> getCategoryToOutgoing(List<Transaction> transactions) {
         Map<String, BigDecimal> categoryToOutgoing = new HashMap<>();
         for (Transaction elem : transactions) {
             if (categoryToOutgoing.containsKey(elem.getCategory())) {
@@ -90,7 +91,7 @@ public class TransactionService {
         return categoryToOutgoing;
     }
 
-    public static List<Transaction> getTransactionsByCategory(List<Transaction> transactions, String category) {
+    public List<Transaction> getTransactionsByCategory(List<Transaction> transactions, String category) {
         return transactions.stream()
                 .filter(el -> el.getCategory() != null)
                 .filter(el -> el.getCategory().toLowerCase().trim().equals(category.toLowerCase().trim()))
@@ -98,7 +99,7 @@ public class TransactionService {
                 .collect(Collectors.toList());
     }
 
-    public static Map<String, BigDecimal> getMonthlyAverageSpendToCategory(List<Transaction> transactions, String category) {
+    public Map<String, BigDecimal> getMonthlyAverageSpendToCategory(List<Transaction> transactions, String category) {
         List<Transaction> transactionsByCategory = getTransactionsByCategory(transactions, category);
         Map<String, BigDecimal> categoryToMonthlySpend = new HashMap<>();
         Map<String, BigDecimal> categoryToMonthlyAvgSpend = new HashMap<>();
