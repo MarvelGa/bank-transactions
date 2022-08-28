@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TransactionService {
     private final TransactionRepository repository;
-    private static int id = 1;
     static String fileDir = "src/main/resources/data.json";
 
     public List<Transaction> getAllTransactionFromRepository() {
@@ -31,7 +30,7 @@ public class TransactionService {
     }
 
     public void readFileAndSaveInRepository() {
-        List<Transaction> transactions = null;
+        List<Transaction> transactions;
         try {
             transactions = parseFile();
         } catch (IOException e) {
@@ -115,6 +114,28 @@ public class TransactionService {
 
         getCategoryToMonthlyAvgSpend(category, categoryToMonthlySpend, categoryToMonthlyAvgSpend, totalAmount);
         return categoryToMonthlyAvgSpend;
+    }
+
+    public Transaction getHighestSpendByCategoryAndYear(int year, String category, List<Transaction> transactions) {
+        List<Transaction> sortedByAmount = getSortedByYearAndCategory(year, category, transactions);
+        return sortedByAmount.isEmpty() ? new Transaction() : sortedByAmount.get(sortedByAmount.size() - 1);
+    }
+
+    public Transaction getLowestSpendByCategoryAndYear(int year, String category, List<Transaction> transactions) {
+        List<Transaction> sortedByAmount = getSortedByYearAndCategory(year, category, transactions);
+        return sortedByAmount.isEmpty() ? new Transaction() : sortedByAmount.get(0);
+    }
+
+    private List<Transaction> getSortedByYearAndCategory(int year, String category, List<Transaction> transactions) {
+        List<Transaction> transactionsByCategory = getTransactionsByCategory(transactions, category);
+        List<Transaction> sortedByAmount = new ArrayList<>();
+        if (!transactions.isEmpty()) {
+            sortedByAmount = transactionsByCategory.stream()
+                    .filter(elem -> elem.getDate().getYear() == year)
+                    .sorted(Comparator.comparing(Transaction::getAmount))
+                    .collect(Collectors.toList());
+        }
+        return sortedByAmount;
     }
 
     private static void getCategoryToMonthlyAvgSpend(String category, Map<String, BigDecimal> categoryToMonthlySpend, Map<String, BigDecimal> categoryToMonthlyAvgSpend, BigDecimal totalAmount) {
