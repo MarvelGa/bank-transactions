@@ -1,8 +1,11 @@
 package org.banktransaction;
 
 import org.banktransaction.entity.Transaction;
+import org.banktransaction.exception.FileCanNotBeParsedException;
+import org.banktransaction.exception.FileCanNotBeReadException;
 import org.banktransaction.repository.TransactionRepository;
 import org.banktransaction.service.TransactionService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -34,7 +38,7 @@ class TransactionServiceTest {
     void setUp() {
         service = new TransactionService(repository);
         transaction1 = Transaction.builder()
-                .id(1L)
+             /*   .id(1L)*/
                 .amount(new BigDecimal("845.03"))
                 .vendor("Vendor1")
                 .category("Groceries")
@@ -43,7 +47,7 @@ class TransactionServiceTest {
                 .build();
 
         transaction2 = Transaction.builder()
-                .id(2L)
+            /*    .id(2L)*/
                 .amount(new BigDecimal("75.03"))
                 .vendor("Vendor2")
                 .category("MyMonthlyDD")
@@ -52,7 +56,7 @@ class TransactionServiceTest {
                 .build();
 
         transaction3 = Transaction.builder()
-                .id(3L)
+     /*           .id(3L)*/
                 .amount(new BigDecimal("775.03"))
                 .vendor("Vendor3")
                 .category("MyMonthlyDD")
@@ -61,7 +65,7 @@ class TransactionServiceTest {
                 .build();
 
         transaction4 = Transaction.builder()
-                .id(4L)
+        /*        .id(4L)*/
                 .amount(new BigDecimal("1475.03"))
                 .vendor("Vendor4")
                 .category("MyMonthlyDD")
@@ -70,7 +74,7 @@ class TransactionServiceTest {
                 .build();
 
         transaction5 = Transaction.builder()
-                .id(5L)
+       /*         .id(5L)*/
                 .amount(new BigDecimal("877.03"))
                 .vendor("Vendor5")
                 .category("")
@@ -80,6 +84,33 @@ class TransactionServiceTest {
 
         transactions = List.of(transaction1, transaction2, transaction3, transaction4, transaction5);
     }
+
+    @Test
+    void shouldParseFileCorrect(){
+        String fileDir = "src/test/resources/test-data.json";
+        List<Transaction> expected =  transactions;
+        var actual = service.readFileAndSaveInRepository(fileDir);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldThrowsFileCanNotBeReadExceptionIfFilesPathNotValid() {
+        String fileDir = "wrong";
+        Throwable exception = Assertions.assertThrows(
+                FileCanNotBeReadException.class, () -> service.readFileAndSaveInRepository(fileDir));
+        assertEquals("Can't find the file. There is a problem with a file's path, it can not be read!", exception.getMessage());
+        assertEquals(FileCanNotBeReadException.class, exception.getClass());
+    }
+
+    @Test
+    void shouldThrowsFileCanNotBeParsedExceptionIfJsonFileDataIsNotValid() {
+        String fileDir = "src/test/resources/incorrect-test-data.json";
+        Throwable exception = Assertions.assertThrows(
+                FileCanNotBeParsedException.class, () -> service.readFileAndSaveInRepository(fileDir));
+        assertEquals("There is a problem with parsing. Json data is not valid", exception.getMessage());
+        assertEquals(FileCanNotBeParsedException.class, exception.getClass());
+    }
+
 
     @Test
     void shouldGetHighestSpendTransactionByCategoryAndYear() {

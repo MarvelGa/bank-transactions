@@ -14,8 +14,8 @@ public class TransactionController {
     /*private final*/ TransactionService service;
 
     public TransactionController(TransactionService service) {
-        this.service = service;
-        service.readFileAndSaveInRepository();
+   /*     this.service = service;
+        service.readFileAndSaveInRepository();*/
     }
 
     @GetMapping("/")

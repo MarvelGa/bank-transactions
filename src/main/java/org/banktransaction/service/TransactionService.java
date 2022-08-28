@@ -29,19 +29,20 @@ public class TransactionService {
         return (List<Transaction>) repository.findAll();
     }
 
-    public void readFileAndSaveInRepository() {
+    public List<Transaction> readFileAndSaveInRepository(String fileDir) {
         List<Transaction> transactions;
         try {
-            transactions = parseFile();
+            transactions = parseFile(fileDir);
         } catch (IOException e) {
-            throw new FileCanNotBeReadException("There is a problem with a file, it can not be read!");
+            throw new FileCanNotBeReadException("Can't find the file. There is a problem with a file's path, it can not be read!");
         }
         if (transactions != null) {
             repository.saveAll(transactions);
         }
+        return transactions;
     }
 
-    public static List<Transaction> parseFile() throws IOException {
+    public List<Transaction> parseFile(String fileDir) throws IOException {
         JSONParser jsonParser = new JSONParser();
         List<Transaction> transactions = null;
         try {
@@ -51,7 +52,7 @@ public class TransactionService {
                 mapJsonToTransaction(transactions, parsedArray);
             }
         } catch (ParseException e) {
-            throw new FileCanNotBeParsedException("There is a problem with parsing");
+            throw new FileCanNotBeParsedException("There is a problem with parsing. Json data is not valid");
         }
         return transactions;
     }

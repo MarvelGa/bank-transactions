@@ -1,0 +1,35 @@
+[{
+    "date":"06/Dec/2021",
+    "vendor":"Vendor1",
+    "type":"INTERNET",
+    "amount":"845.03",
+    "category":"Groceries"
+  },
+  {
+    "date":"18/Nov/2020",
+    "vendor":"Vendor2",
+    "type":"CARD",
+    "amount":"75.03",
+    "category":"MyMonthlyDD"
+  },
+  {
+    "date":"17/Jan/2021",
+    "vendor":"Vendor3",
+    "type":"DIRECT_DEBIT",
+    "amount":"775.03",
+    "category":"MyMonthlyDD"
+  },
+  {
+    "date":"05/Mar/2020",
+    "vendor":"Vendor4",
+    "type":"INTERNET",
+    "amount":"1475.03",
+    "category":"MyMonthlyDD"
+  },
+  {
+    "date":"05/Mar/2020",
+    "vendor":"Vendor5",
+    "type":"CARD",
+    "amount":"877.03",
+    "category":""
+]
