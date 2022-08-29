@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/styles.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="container">
+    <div class="context">
+        <h1>Transactions table</h1>
+        <div id="panel" th:insert="~{fragments/panel::panel}"></div>
+        <br/>
+        <br/>
+        <form action="#" th:action="@{/}" method="get">
+            <input type="submit" value="Get All Transactions">
+        </form>
+        <br/>
+        <form th:action="@{/}" th:object="${categoryName}" method="post">
+            <label for="categoryName">Enter a category:</label>
+            <input type="text" id="categoryName" name="categoryName">
+            <input type="submit" value="Submit">
+        </form>
+        <br/>
+        <br/>
+        <div th:if="${transactions.size()}!=0">
+            <div id="transaction-form" th:insert="~{fragments/transaction-form :: transaction-form}"></div>
+        </div>
+        <div th:unless="${transactions.size()}!=0">
+            <h3 style="color: deeppink">There no transactions!</h3>
+        </div>
+    </div>
+</div>
+</body>
+</html>

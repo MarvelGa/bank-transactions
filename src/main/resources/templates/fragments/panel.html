@@ -1,0 +1,35 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="panel">
+    <table>
+        <tr></tr>
+        <tr></tr>
+        <tr>
+            <td>
+                <form action="#" th:action="@{/}" method="get">
+                    <input type="submit" value="Get All Transactions by Category">
+                </form>
+            </td>
+            <td>
+                <form action="#" th:action="@{/total-outgoing}" method="get">
+                    <input type="submit" value="Get Total Outgoing Per Category">
+                </form>
+            </td>
+            <td>
+                <form action="#" th:action="@{/monthly-average}" method="get">
+                    <input type="submit" value="Get Monthly Average Spend By Category">
+                </form>
+            </td>
+            <td>
+                <form action="#" th:action="@{/highest-spend}" method="get">
+                    <input type="submit" value="Get Highest Spend By Category And Year">
+                </form>
+            </td>
+            <td>
+                <form action="#" th:action="@{/lowest-spend}" method="get">
+                    <input type="submit" value="Get Lowest Spend By Category And Year">
+                </form>
+            </td>
+        </tr>
+        <tr></tr>
+        <tr></tr>
+    </table>
+</th:block>

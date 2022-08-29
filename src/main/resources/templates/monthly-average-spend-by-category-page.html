@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/styles.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="container">
+    <div class="context">
+        <h1>Monthly Average Spend By Cateory</h1>
+        <div id="panel" th:insert="~{fragments/panel::panel}"></div>
+        <br/>
+        <br/>
+
+        <form th:action="@{monthly-average/}" th:object="${categoryName}" method="post">
+            <label for="categoryName">Enter category:</label>
+            <input type="text" id="categoryName" name="categoryName">
+            <input type="submit" value="Submit">
+        </form>
+
+        <br/>
+
+        <div th:if="${categoryToMonthlyAvgSpend!=null}">
+            <div th:if="${categoryToMonthlyAvgSpend!=0}">
+                <table border="1">
+                    <tr>
+                        <th>No.</th>
+                        <th>Category</th>
+                        <th>Monthly Average Spend</th>
+                    </tr>
+                    <tr th:each="categoryToMonthlyAvgSpend, iStat: ${categoryToMonthlyAvgSpend}">
+                        <td th:text="${iStat.index + 1}"/>
+                        <td>
+                            <a th:text="${categoryToMonthlyAvgSpend.key}"/>
+                        </td>
+                        <td>
+                            <a th:text="${categoryToMonthlyAvgSpend.value}"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div th:unless="${categoryToMonthlyAvgSpend.size()!=0}">
+                <h3 style="color: deeppink">There no data by this category!</h3>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

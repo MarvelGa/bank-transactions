@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/styles.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="container">
+    <div class="context">
+        <h1>Total outgoing per category</h1>
+        <div id="panel" th:insert="~{fragments/panel::panel}"></div>
+        <br/>
+        <br/>
+
+        <table border="1">
+            <tr>
+                <th>No.</th>
+                <th>Category</th>
+                <th>Total Outgoing</th>
+            </tr>
+            <tr th:each="outGoingByCategory, iStat: ${categoryToAmount}">
+                <td th:text="${iStat.index + 1}"/>
+                <td>
+                    <a th:text="${outGoingByCategory.key}"/>
+                </td>
+                <td>
+                    <a th:text="${outGoingByCategory.value}"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>

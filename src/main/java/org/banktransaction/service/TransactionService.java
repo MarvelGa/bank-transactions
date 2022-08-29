@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TransactionService {
     private final TransactionRepository repository;
-    static String fileDir = "src/main/resources/data.json";
+    public String fileDir = "src/main/resources/data.json";
 
     public List<Transaction> getAllTransactionFromRepository() {
         return (List<Transaction>) repository.findAll();
@@ -92,6 +92,20 @@ public class TransactionService {
     }
 
     public List<Transaction> getTransactionsByCategory(List<Transaction> transactions, String category) {
+        for (Transaction elem : transactions) {
+            if (elem.getCategory() == null) {
+                int index = transactions.indexOf(elem);
+                Transaction transaction = Transaction.builder()
+                        .id(elem.getId())
+                        .category("")
+                        .vendor(elem.getVendor())
+                        .type(elem.getType())
+                        .amount(elem.getAmount())
+                        .date(elem.getDate())
+                        .build();
+                transactions.set(index, transaction);
+            }
+        }
         return transactions.stream()
                 .filter(el -> el.getCategory() != null)
                 .filter(el -> el.getCategory().toLowerCase().trim().equals(category.toLowerCase().trim()))

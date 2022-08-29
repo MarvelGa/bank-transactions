@@ -1,0 +1,8 @@
+.container {
+    display: flex;
+    align-content: center;
+}
+
+.context {
+    margin: 10px auto;
+}

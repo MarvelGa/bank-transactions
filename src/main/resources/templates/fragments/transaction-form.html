@@ -1,0 +1,30 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="transaction-form">
+    <table border="1">
+        <tr>
+            <th>No.</th>
+            <th>Transaction Date</th>
+            <th>Vendor</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Category</th>
+        </tr>
+        <tr th:each="transaction, iStat: ${transactions}">
+            <td th:text="${iStat.index + 1}"/>
+            <td>
+                <a th:text="${transaction.date}"/>
+            </td>
+            <td>
+                <a th:text="${transaction.vendor}"/>
+            </td>
+            <td>
+                <a th:text="${transaction.type.type}"/>
+            </td>
+            <td>
+                <a th:text="${transaction.amount}"/>
+            </td>
+            <td>
+                <a th:text="${transaction.category}"/>
+            </td>
+        </tr>
+    </table>
+</th:block>
