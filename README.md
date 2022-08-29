@@ -4,7 +4,7 @@
 
 About the App:
 
-- The App gets data form json - data.json (file src/main/resources/data.json) and save it in "hsqldb" DataBase.
+- The App gets data form the json file - data.json (file src/main/resources/data.json) and save it in "hsqldb" DataBase.
   
 About testing:
 - there are 17 tests for TransactionService - TransactionServiceTest. I used 2 files for testing: incorrect-test-data.json (src/test/resources/incorrect-test-data.json) and test-data.json (src/test/resources/test-data.json).
